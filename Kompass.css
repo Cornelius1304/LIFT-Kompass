@@ -30,7 +30,7 @@ nav{
     position: sticky;
     grid-area: navbar;
     background-color: white;
-    border-bottom: 1px solid gray;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
     z-index: 2;
     > img{
         width: 10em;
@@ -44,11 +44,22 @@ nav{
         height: 5em;
     }
 }
+
+.background-image {
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: background-image 1s ease-in-out;
+}
+.gallery-images img.active {
+    opacity: 1;
+}
 #sidebar{
     box-sizing: border-box;
     height: calc(100vh - 6rem);
     width: 270px;
-    border-right: 1px solid gray;
+    box-shadow:  2px 0px 4px 0px rgba(0, 0, 0, 0.2);
+
     top: 6rem;
     padding: 5px 1em;
     position: sticky;
@@ -107,10 +118,7 @@ aside a:hover{
 
 main{
     padding: 10em;
-    top: 10rem; /* Slightly lower than div1 */
-    > ul{
-        text-align: justify;
-    }
+    top: 10rem;
 }
 .header{
     text-align: center;
@@ -214,6 +222,14 @@ ul > li > button > span{
     z-index: 100;
 }
 
+.download{
+    text-decoration: none;
+    color: var(--active);
+    font-size: 22px;
+    > svg{
+        fill: var(--active);
+    }
+}
 
 
 footer{

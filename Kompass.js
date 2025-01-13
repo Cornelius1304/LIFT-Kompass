@@ -51,8 +51,8 @@ image.addEventListener('mousemove', (event) => {
 
 
 const images = [
-    'url("Ai1.jpg")',
-    'url("Ai2.png")',
+    'url("LIT-16.png")',
+    'url("FLIFT-03.PNG")',
     'url("Ai3.png")',
 ];
 
