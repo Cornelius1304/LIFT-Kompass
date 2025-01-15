@@ -49,27 +49,19 @@ image.addEventListener('mousemove', (event) => {
     }
 });
 
+function moveCarousel(button, direction) {
+    const carousel = button.parentElement.querySelector('.carousel-images');
+    const totalImages = carousel.children.length;
+    let currentIndex = (parseInt(carousel.dataset.currentIndex) || 0) + direction;
 
-const images = [
-    'url("LIT-16.png")',
-    'url("FLIFT-03.PNG")',
-    'url("Ai3.png")',
-];
+    if (currentIndex < 0) {
+        currentIndex = totalImages - 1; // Loop back to last image
+    } else if (currentIndex >= totalImages) {
+        currentIndex = 0; // Loop back to first image
+    }
 
-const gallery = document.querySelector('.background-image');
-
-let currentIndex = 0;
-
-function changeBackground() {
-    gallery.style.backgroundImage = images[currentIndex];
-    gallery.classList.add('active');
-
-    setTimeout(() => {
-        gallery.classList.remove('active');
-    }, 5000);
-
-    currentIndex = (currentIndex + 1) % images.length;
+    carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+    carousel.dataset.currentIndex = currentIndex; // Store the current index
 }
 
-setInterval(changeBackground, 6000);
-changeBackground();
+
