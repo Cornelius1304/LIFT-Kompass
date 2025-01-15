@@ -23,17 +23,15 @@ function closePage(){
 }
 
 const img = document.getElementById('Page');
-let scale = 1; // Initial scale
-const zoomStep = 1.5; // Zoom increment
+let scale = 1;
+const zoomStep = 1.5;
 
 img.addEventListener('click', (event) => {
     const rect = img.getBoundingClientRect();
     
-    // Calculate mouse click position relative to the image
     const offsetX = event.clientX - rect.left;
     const offsetY = event.clientY - rect.top;
 
-    // Toggle scale
     scale = scale === 1 ? 1 + zoomStep : 1; 
     img.style.transform = `scale(${scale})`;
     img.style.transformOrigin = `${(offsetX / img.width) * 100}% ${(offsetY / img.height) * 100}%`;
@@ -55,13 +53,13 @@ function moveCarousel(button, direction) {
     let currentIndex = (parseInt(carousel.dataset.currentIndex) || 0) + direction;
 
     if (currentIndex < 0) {
-        currentIndex = totalImages - 1; // Loop back to last image
+        currentIndex = totalImages - 1;
     } else if (currentIndex >= totalImages) {
-        currentIndex = 0; // Loop back to first image
+        currentIndex = 0;
     }
 
     carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
-    carousel.dataset.currentIndex = currentIndex; // Store the current index
+    carousel.dataset.currentIndex = currentIndex;
 }
 
 

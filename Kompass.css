@@ -229,20 +229,20 @@ ul > li > button > span{
 .image-gallery {
     position: relative;
     width: 100%;
-    height: 400px; /* Set your desired height */
+    height: 400px;
     overflow: hidden;
 }
 
 .slides {
     display: flex;
     transition: transform 1s ease;
-    width: 300%; /* Adjust based on the number of images */
+    width: 300%;
 }
 
 .slides img {
-    width: 100%; /* Make sure images cover the header */
-    height: 400px; /* Match the height of the gallery */
-    object-fit: cover; /* Maintain aspect ratio */
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
 }
 
 footer{
