@@ -49,4 +49,16 @@ function getTeamYears($pdo) {
     $stmt = $pdo->query("SELECT DISTINCT team_year FROM members WHERE team_year IS NOT NULL ORDER BY team_year DESC");
     return $stmt->fetchAll(PDO::FETCH_COLUMN);
 }
+
+function isAdminLoggedIn() {
+    return isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
+}
+
+// Redirect to login if not admin
+function requireAdmin() {
+    if (!isAdminLoggedIn()) {
+        header('Location: admin_login.php');
+        exit;
+    }
+}
 ?>
