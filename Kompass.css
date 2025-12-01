@@ -1,0 +1,633 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+html{
+    font-family: "Montserat", sans-serif;
+}
+:root{
+    --base: #3471B8;
+    --active: #024A76;
+    --hover: #E3AB23;
+}
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: grid;
+    position: relative;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas: 
+    "navbar navbar"
+    "sidebar gallery"
+    "sidebar footer";
+
+}
+nav{
+    height: 6rem;
+    top: 0;
+    position: sticky;
+    grid-area: navbar;
+    background-color: white;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+    z-index: 2;
+    > img{
+        width: 10em;
+        padding-left: 5em;
+        padding-top: 1em;
+    }
+    #departament{
+        position: absolute;
+        top: 1em;
+        right: 5em;
+        height: 5em;
+    }
+}
+
+
+#sidebar{
+    box-sizing: border-box;
+    height: calc(100vh - 6rem);
+    width: 270px;
+    box-shadow:  2px 0px 4px 0px rgba(0, 0, 0, 0.2);
+
+    top: 6rem;
+    padding: 5px 1em;
+    position: sticky;
+    align-self: start;
+    grid-area: sidebar;
+    transition: 300ms ease-in-out;
+    overflow: hidden;
+    text-wrap: nowrap;
+}
+#sidebar.close{
+    padding: 5px;
+    width: 70px;
+}
+#sidebar ul, main ul{
+    list-style: none;
+}
+#sidebar a, #sidebar #button, #sidebar span{
+    border-radius: .5em;
+    padding: 1em;
+    text-decoration: none;
+    color: var(--base);
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+#sidebar ul li.active span, #sidebar ul li.active a{
+    color: var(--active);
+    svg{
+        fill: var(--active);
+    }
+}
+aside svg{
+    flex-shrink: 0;
+    fill: var(--base);
+}
+aside a:hover{
+    background-color: var(--hover);
+}
+
+#sidebar > ul > li:first-child{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+    .Inhalt{
+        font-weight: 600;
+    }
+}
+#button{
+    margin-right: 0.3em;
+    padding: 1em;
+    border: none;
+    border-radius: .5em;
+    background: none;
+    cursor: pointer;
+}
+
+.main{
+    position: relative;
+    padding: 10em;
+}
+.header{
+    position: relative;
+    text-align: center;
+    z-index: 1;
+}
+.Ausgaben{
+    text-align: justify;
+}
+
+.dropdownButton{
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: 0.5em;
+    cursor: pointer;
+    font-size: 3rem;
+    color: var(--base);
+    > svg{
+        fill: var(--base)
+    }
+}
+.dropdownButton:hover{
+    color: var(--hover);
+    > svg{
+        fill: var(--hover);
+    }
+}
+ul > li > button > span{
+    font-size: 20px;
+}
+.dropdown{
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: 300ms ease-in-out;
+    font-size: 18px;
+    line-height: 1.5;
+    > div{
+        margin-left: 3rem;
+        margin-right: 3rem;
+        overflow: hidden;
+    }
+}
+.dropdown.show{
+    grid-template-rows: 1fr;
+}
+.dropdownButton svg{
+    transition: 200ms ease;
+}
+.rotate svg:first-child{
+    rotate: 180deg;
+}
+
+
+.PageContainer{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    padding: 10px;
+}
+.PageContainer .PageImage img{
+    height: 400px;
+    border: 3px solid var(--base);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .1);
+    overflow: hidden;
+    cursor: pointer;
+    object-fit: cover;
+    transition: .2s linear;
+}
+.PageContainer .PageImage img:hover{
+    transform: scale(1.05);
+}
+
+
+.popupPage{
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, .9);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+.popupPage img{
+    width: 90%;
+    max-width: 650px;
+    display: flex;
+    align-items: center;
+    cursor:zoom-in;
+
+}
+.popupPage span{
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    font-size: 80px;
+    color: white;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.download{
+    text-decoration: none;
+    color: var(--active);
+    font-size: 22px;
+    > svg{
+        fill: var(--active);
+    }
+}
+
+.image-gallery {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+}
+
+.slides {
+    display: flex;
+    transition: transform 1s ease;
+    width: 300%;
+}
+
+.slides img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+footer{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    justify-content: center;
+    grid-area: footer;
+    background-color: var(--active);
+    color: antiquewhite;
+    padding: 2em;
+}
+.adress{
+    font-size: 20px;
+    line-height: 2;
+    color: white;
+    > span a{
+        text-decoration: none;
+        color: white;
+        fill: white;
+    }
+}
+.social:hover{
+    color: var(--hover);
+    > svg{
+        fill: var(--hover);
+    }
+}
+.social a:hover{
+    color: var(--hover);
+    > svg{
+        fill: var(--hover);
+    }
+}
+
+.box{
+    border: 1px solid var(--base);
+    border-radius: 10px;
+    padding-left: 10em;
+    padding-right: 10em;
+    padding-top: 2em;
+    padding-bottom: 2em;
+    margin-left: 5em;
+    margin-right: 5em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    text-align: justify;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 18px;
+    line-height: 1.5;
+    > img{
+        width: 400px;
+        margin: 1em;
+    }
+}
+
+.carousel {
+    position: relative;
+    overflow: hidden;
+    width: 500px;
+    height: 700px;
+    margin: 2em;
+}
+.carouselM{
+    position: relative;
+    overflow: hidden;
+    width: 700px;
+    height: 500px;
+}
+
+.carousel-images {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.carousel-image {
+    min-width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1;
+}
+
+.carousel-button.prev {
+    left: 10px;
+}
+
+.carousel-button.next {
+    right: 10px;
+}
+.presse{
+    line-height: 2;
+    text-align: justify;
+}
+/* Mobile Styles Only - Won't affect desktop */
+@media (max-width: 768px) {
+    body{
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto;
+        grid-template-areas: 
+        "navbar"
+        "gallery"
+        "footer";
+    }
+    
+    /* Hide desktop sidebar */
+    #sidebar {
+        display: none;
+    }
+    
+    /* Mobile bottom navigation */
+    .mobile-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: white;
+        border-top: 1px solid #ddd;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 1000;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .mobile-nav a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: var(--base);
+        font-size: 12px;
+        padding: 5px;
+        flex: 1;
+        text-align: center;
+    }
+    
+    .mobile-nav svg {
+        width: 24px;
+        height: 24px;
+        margin-bottom: 4px;
+        fill: var(--base);
+    }
+    
+    .mobile-nav a.active {
+        color: var(--active);
+    }
+    
+    .mobile-nav a.active svg {
+        fill: var(--active);
+    }
+    
+    nav{
+        height: 5rem;
+        padding: 0 0.5rem;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        
+        > img{
+            width: 6em;
+            padding-left: 0;
+            padding-top: 0;
+            max-width: 120px;
+        }
+        
+        #departament{
+            position: static;
+            height: 3em;
+            top: auto;
+            right: auto;
+            max-height: 50px;
+        }
+    }
+    
+    .main{
+        padding: 1rem 0.5rem;
+        margin-bottom: 60px; /* Space for mobile navbar */
+    }
+    
+    .header{
+        padding: 0.5rem 0;
+        text-align: center;
+    }
+    
+    .dropdownButton{
+        font-size: 1.2rem;
+        padding: 0.8rem;
+    }
+    
+    ul > li > button > span{
+        font-size: 16px;
+    }
+    
+    /* Fix all images to be responsive */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    .PageContainer .PageImage img{
+        height: auto;
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .image-gallery {
+        height: 200px;
+    }
+    
+    .slides img {
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
+    }
+    
+    .box{
+        padding: 1rem;
+        margin: 0.5rem;
+        font-size: 14px;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        margin-left: 0;
+        margin-right: 0;
+        width: calc(100% - 1rem);
+        box-sizing: border-box;
+    }
+    
+    .carousel {
+        height: 300px;
+        width: 100%;
+        max-width: 100%;
+        margin: 1em 0;
+    }
+    
+    .carouselM{
+        height: 250px;
+        width: 100%;
+        max-width: 100%;
+        margin: 1em 0;
+    }
+    
+    .carousel-images {
+        width: 100%;
+    }
+    
+    .carousel-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .carousel-button {
+        padding: 6px;
+        font-size: 16px;
+    }
+    
+    footer{
+        padding: 1rem;
+        font-size: 14px;
+        position: relative;
+        width: 100%;
+    }
+    
+    .adress{
+        font-size: 14px;
+    }
+    
+    .popupPage span{
+        font-size: 30px;
+        top: 1%;
+    }
+    
+    .box > img{
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+    }
+    
+    /* Ensure all content containers are full width */
+    .PageContainer, .image-gallery, .carousel, .carouselM {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+    .main{
+        padding: 0.5rem;
+    }
+    
+    .PageContainer .PageImage img{
+        height: auto;
+    }
+    
+    .image-gallery {
+        height: 150px;
+    }
+    
+    .slides img {
+        height: 150px;
+    }
+    
+    .carousel {
+        height: 250px;
+    }
+    
+    .carouselM{
+        height: 200px;
+    }
+    
+    .box > img{
+        max-width: 250px;
+    }
+    
+    .dropdownButton{
+        font-size: 1.1rem;
+    }
+    
+    nav > img{
+        width: 5em;
+    }
+    
+    #departament{
+        height: 2.5em;
+    }
+    
+    .mobile-nav {
+        height: 55px;
+    }
+    
+    .mobile-nav a {
+        font-size: 11px;
+    }
+}
+
+/* Very small phones */
+@media (max-width: 360px) {
+    .mobile-nav {
+        height: 50px;
+    }
+    
+    .main{
+        margin-bottom: 50px;
+    }
+    
+    nav{
+        height: 4rem;
+    }
+    
+    .PageContainer .PageImage img{
+        height: auto;
+    }
+    
+    .box{
+        padding: 0.8rem;
+    }
+    
+    .dropdownButton{
+        font-size: 1rem;
+    }
+    
+    .mobile-nav svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .mobile-nav a {
+        font-size: 10px;
+    }
+}
