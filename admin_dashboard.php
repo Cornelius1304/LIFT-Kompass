@@ -87,13 +87,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (isset($_POST['add_issue'])) {
             // Add new issue
             $title = $_POST['issue_title'];
+            $issue_number = $_POST['issue_number'];
             $description = $_POST['issue_description'];
             
-            // Handle PDF upload - save to LIFT-Kompass/Ausgaben/
+            // Handle PDF upload
             $pdf_path = '';
             if (!empty($_FILES['pdf']['name'])) {
-                $upload_dir = "Ausgaben/"; // Relative to admin_dashboard.php location
-                
+                $upload_dir = "Ausgaben/";
                 $filename = uniqid() . '_' . basename($_FILES['pdf']['name']);
                 $target_path = $upload_dir . $filename;
                 
@@ -102,34 +102,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             
-            $stmt = $pdo->prepare("INSERT INTO issues (title, description, pdf_path) VALUES (?, ?, ?)");
-            $stmt->execute([$title, $description, $pdf_path]);
-            $message = "Issue added successfully!";
+            // Handle carousel image uploads
+            $carousel_images = [];
+            if (!empty($_FILES['carousel_images']['name'][0])) {
+                $upload_dir = "Ausgaben/Seiten/";
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0755, true);
+                }
+                
+                foreach ($_FILES['carousel_images']['tmp_name'] as $key => $tmp_name) {
+                    if ($_FILES['carousel_images']['error'][$key] === UPLOAD_ERR_OK) {
+                        $filename = uniqid() . '_' . basename($_FILES['carousel_images']['name'][$key]);
+                        $target_path = $upload_dir . $filename;
+                        
+                        if (move_uploaded_file($tmp_name, $target_path)) {
+                            $carousel_images[] = "/LIFT-Kompass/" . $target_path;
+                        }
+                    }
+                }
+            }
+            
+            $stmt = $pdo->prepare("INSERT INTO issues (title, issue_number, description, pdf_path, image_paths) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $issue_number, $description, $pdf_path, json_encode($carousel_images)]);
+            $message = "Issue #$issue_number added successfully!";
             
         } elseif (isset($_POST['update_issue'])) {
             // Update existing issue
             $issue_id = $_POST['issue_id'];
             $title = $_POST['issue_title'];
+            $issue_number = $_POST['issue_number'];
             $description = $_POST['issue_description'];
             
-            // Handle PDF upload - save to LIFT-Kompass/Ausgaben/
-            $pdf_path = '';
+            // Handle PDF upload - keep existing if no new upload
+            $pdf_path = $edit_issue['pdf_path'] ?? '';
             if (!empty($_FILES['pdf']['name'])) {
-                $upload_dir = "Ausgaben/"; // Relative to admin_dashboard.php location
-                
+                $upload_dir = "Ausgaben/";
                 $filename = uniqid() . '_' . basename($_FILES['pdf']['name']);
                 $target_path = $upload_dir . $filename;
                 
                 if (move_uploaded_file($_FILES['pdf']['tmp_name'], $target_path)) {
                     $pdf_path = "/LIFT-Kompass/Ausgaben/" . $filename;
                 }
-                $stmt = $pdo->prepare("UPDATE issues SET title = ?, description = ?, pdf_path = ? WHERE id = ?");
-                $stmt->execute([$title, $description, $pdf_path, $issue_id]);
-            } else {
-                $stmt = $pdo->prepare("UPDATE issues SET title = ?, description = ? WHERE id = ?");
-                $stmt->execute([$title, $description, $issue_id]);
             }
-            $message = "Issue updated successfully!";
+            
+            // Handle carousel image uploads - keep existing if no new upload
+            $image_paths = $edit_issue['image_paths'] ?? '';
+            if (!empty($_FILES['carousel_images']['name'][0])) {
+                $upload_dir = "Ausgaben/Seiten/";
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0755, true);
+                }
+                
+                $carousel_images = [];
+                foreach ($_FILES['carousel_images']['tmp_name'] as $key => $tmp_name) {
+                    if ($_FILES['carousel_images']['error'][$key] === UPLOAD_ERR_OK) {
+                        $filename = uniqid() . '_' . basename($_FILES['carousel_images']['name'][$key]);
+                        $target_path = $upload_dir . $filename;
+                        
+                        if (move_uploaded_file($tmp_name, $target_path)) {
+                            $carousel_images[] = "/LIFT-Kompass/" . $target_path;
+                        }
+                    }
+                }
+                $image_paths = json_encode($carousel_images);
+            }
+            
+            // Update all fields including issue_number
+            $stmt = $pdo->prepare("UPDATE issues SET title = ?, issue_number = ?, description = ?, pdf_path = ?, image_paths = ? WHERE id = ?");
+            $stmt->execute([$title, $issue_number, $description, $pdf_path, $image_paths, $issue_id]);
+            $message = "Issue #$issue_number updated successfully!";
             
         } elseif (isset($_POST['add_press'])) {
             // Add new press mention
@@ -500,15 +541,15 @@ if (isset($_GET['edit_lesekreis'])) {
         <a href="?logout" class="logout-btn">Logout</a>
 
         <div class="tabs">
-            <div class="tab active" onclick="showTab('events')">Events</div>
-            <div class="tab" onclick="showTab('issues')">Issues</div>
-            <div class="tab" onclick="showTab('press')">Press</div>
-            <div class="tab" onclick="showTab('members')">Members</div>
-            <div class="tab" onclick="showTab('lesekreis')">Lesekreis</div>
+            <div class="tab <?= !isset($_GET['edit_issue']) && !isset($_GET['edit_press']) && !isset($_GET['edit_member_post']) && !isset($_GET['edit_lesekreis']) ? 'active' : '' ?>" onclick="showTab('events')">Events</div>
+            <div class="tab <?= isset($_GET['edit_issue']) ? 'active' : '' ?>" onclick="showTab('issues')">Issues</div>
+            <div class="tab <?= isset($_GET['edit_press']) ? 'active' : '' ?>" onclick="showTab('press')">Press</div>
+            <div class="tab <?= isset($_GET['edit_member_post']) ? 'active' : '' ?>" onclick="showTab('members')">Members</div>
+            <div class="tab <?= isset($_GET['edit_lesekreis']) ? 'active' : '' ?>" onclick="showTab('lesekreis')">Lesekreis</div>
         </div>
 
         <!-- Events Tab -->
-        <div id="events" class="tab-content active">
+        <div id="events" class="tab-content <?= !isset($_GET['edit_issue']) && !isset($_GET['edit_press']) && !isset($_GET['edit_member_post']) && !isset($_GET['edit_lesekreis']) ? 'active' : '' ?>">
             <div class="section">
                 <h2><?= $edit_event ? 'Edit Event' : 'Add New Event' ?></h2>
                 <form method="POST" enctype="multipart/form-data">
@@ -582,7 +623,7 @@ if (isset($_GET['edit_lesekreis'])) {
         </div>
 
         <!-- Issues Tab -->
-        <div id="issues" class="tab-content">
+        <div id="issues" class="tab-content <?= isset($_GET['edit_issue']) ? 'active' : '' ?>">
             <div class="section">
                 <h2><?= $edit_issue ? 'Edit Issue' : 'Add New Issue' ?></h2>
                 <form method="POST" enctype="multipart/form-data">
@@ -594,6 +635,13 @@ if (isset($_GET['edit_lesekreis'])) {
                         <label>Title:</label>
                         <input type="text" name="issue_title" value="<?= $edit_issue ? htmlspecialchars($edit_issue['title']) : '' ?>" required>
                     </div>
+                    
+                    <div class="form-group">
+                        <label>Issue Number (e.g., "1" or "2024-1"):</label>
+                        <input type="text" name="issue_number" value="<?= $edit_issue ? htmlspecialchars($edit_issue['issue_number'] ?? '') : '' ?>" required placeholder="e.g., 1, 2, 2024-1, etc.">
+                        <small>This will be displayed as "Lade die [issue_number]. Nummer herunter"</small>
+                    </div>
+                    
                     <div class="form-group">
                         <label>Description:</label>
                         <textarea name="issue_description" required><?= $edit_issue ? htmlspecialchars($edit_issue['description']) : '' ?></textarea>
@@ -613,6 +661,29 @@ if (isset($_GET['edit_lesekreis'])) {
                         <?php endif; ?>
                     </div>
                     
+                    <?php if ($edit_issue && isset($edit_issue['image_paths']) && $edit_issue['image_paths']): ?>
+                        <div class="current-images">
+                            <strong>Current Carousel Images:</strong><br>
+                            <?php 
+                            $images = json_decode($edit_issue['image_paths'], true);
+                            if (is_array($images)):
+                                foreach ($images as $image): ?>
+                                    <div style="display: inline-block; margin: 5px; text-align: center;">
+                                        <img src="<?= htmlspecialchars($image) ?>" alt="Carousel image" style="max-width: 100px; max-height: 100px;">
+                                        <br>
+                                        <small><?= basename($image) ?></small>
+                                    </div>
+                                <?php endforeach;
+                            endif; ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <div class="form-group">
+                        <label>Carousel Images (optional, multiple):</label>
+                        <input type="file" name="carousel_images[]" multiple accept="image/*">
+                        <small>These images will be displayed in the carousel on the main page. Save to Ausgaben/Seiten/ folder.</small>
+                    </div>
+                    
                     <?php if ($edit_issue): ?>
                         <button type="submit" name="update_issue">Update Issue</button>
                         <a href="?" class="cancel-btn" style="text-decoration: none; display: inline-block;">Cancel</a>
@@ -627,6 +698,7 @@ if (isset($_GET['edit_lesekreis'])) {
                 <table>
                     <tr>
                         <th>ID</th>
+                        <th>Issue #</th>
                         <th>Title</th>
                         <th>PDF Path</th>
                         <th>Actions</th>
@@ -634,6 +706,7 @@ if (isset($_GET['edit_lesekreis'])) {
                     <?php foreach ($issues as $issue): ?>
                     <tr>
                         <td><?= $issue['id'] ?></td>
+                        <td><?= htmlspecialchars($issue['issue_number'] ?? 'Not set') ?></td>
                         <td><?= htmlspecialchars($issue['title']) ?></td>
                         <td><?= htmlspecialchars($issue['pdf_path']) ?></td>
                         <td>
@@ -650,7 +723,7 @@ if (isset($_GET['edit_lesekreis'])) {
         </div>
 
         <!-- Press Tab -->
-        <div id="press" class="tab-content">
+        <div id="press" class="tab-content <?= isset($_GET['edit_press']) ? 'active' : '' ?>">
             <div class="section">
                 <h2><?= $edit_press ? 'Edit Press Mention' : 'Add New Press Mention' ?></h2>
                 <form method="POST">
@@ -710,7 +783,7 @@ if (isset($_GET['edit_lesekreis'])) {
         </div>
 
         <!-- Members Tab -->
-        <div id="members" class="tab-content">
+        <div id="members" class="tab-content <?= isset($_GET['edit_member_post']) ? 'active' : '' ?>">
             <div class="section">
                 <h2><?= (isset($edit_member_post) && $edit_member_post) ? 'Edit Team Year Post' : 'Add New Team Year Post' ?></h2>
                 <form method="POST" enctype="multipart/form-data">
@@ -819,7 +892,7 @@ if (isset($_GET['edit_lesekreis'])) {
         </div>
 
         <!-- Lesekreis Tab -->
-        <div id="lesekreis" class="tab-content">
+        <div id="lesekreis" class="tab-content <?= isset($_GET['edit_lesekreis']) ? 'active' : '' ?>">
             <div class="section">
                 <h2><?= (isset($edit_lesekreis) && $edit_lesekreis) ? 'Edit Lesekreis Post' : 'Add New Lesekreis Post' ?></h2>
                 <form method="POST" enctype="multipart/form-data">
@@ -918,14 +991,33 @@ if (isset($_GET['edit_lesekreis'])) {
             
             // Activate selected tab
             event.target.classList.add('active');
+            
+            // Update URL hash without page reload
+            window.location.hash = tabName;
         }
 
         // Show the correct tab if URL has hash
         window.addEventListener('load', function() {
             const hash = window.location.hash.substring(1);
             if (hash && ['events', 'issues', 'press', 'members', 'lesekreis'].includes(hash)) {
-                showTab(hash);
+                // Find and click the corresponding tab
+                document.querySelectorAll('.tab').forEach(tab => {
+                    if (tab.textContent.trim().toLowerCase() === hash) {
+                        tab.click();
+                    }
+                });
             }
+            
+            // Also check for edit parameters to activate the right tab
+            <?php if (isset($_GET['edit_issue'])): ?>
+                showTab('issues');
+            <?php elseif (isset($_GET['edit_press'])): ?>
+                showTab('press');
+            <?php elseif (isset($_GET['edit_member_post'])): ?>
+                showTab('members');
+            <?php elseif (isset($_GET['edit_lesekreis'])): ?>
+                showTab('lesekreis');
+            <?php endif; ?>
         });
     </script>
 </body>

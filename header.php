@@ -7,7 +7,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIFT Kompass</title>
+    <title>LIT Kompass</title>
     <link rel="stylesheet" href="Kompass.css">
     <script type="text/javascript" src="Kompass.js" defer></script>
 </head>
@@ -60,5 +60,4 @@ session_start();
             </li>
         </ul> 
     </aside>
-    
     <main>

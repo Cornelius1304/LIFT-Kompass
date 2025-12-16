@@ -13,13 +13,34 @@ try {
 
 // Function to get all issues with their pages
 function getIssuesWithPages($pdo) {
-    $stmt = $pdo->query("SELECT * FROM issues ORDER BY id DESC");
+    // Added issue_number to SELECT
+    $stmt = $pdo->query("SELECT id, issue_number, title, description, pdf_path, image_paths FROM issues ORDER BY id DESC");
     $issues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($issues as &$issue) {
-        $stmt = $pdo->prepare("SELECT * FROM pages WHERE issue_id = ? ORDER BY page_number");
-        $stmt->execute([$issue['id']]);
-        $issue['pages'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $issue['pages'] = [];
+        
+        // FIRST: Check for carousel images in the NEW image_paths column
+        if (!empty($issue['image_paths'])) {
+            $image_paths = json_decode($issue['image_paths'], true);
+            if (is_array($image_paths) && !empty($image_paths)) {
+                foreach ($image_paths as $index => $image_path) {
+                    $issue['pages'][] = [
+                        'id' => null,
+                        'issue_id' => $issue['id'],
+                        'page_number' => $index + 1,
+                        'image_path' => $image_path
+                    ];
+                }
+            }
+        }
+        
+        // SECOND: If no carousel images, fall back to the OLD pages table
+        if (empty($issue['pages'])) {
+            $stmt = $pdo->prepare("SELECT * FROM pages WHERE issue_id = ? ORDER BY page_number");
+            $stmt->execute([$issue['id']]);
+            $issue['pages'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
     
     return $issues;
