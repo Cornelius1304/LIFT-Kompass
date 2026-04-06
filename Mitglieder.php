@@ -1,17 +1,14 @@
 <?php
 require_once 'header.php';
 
-// Try to get team years, but handle if table doesn't exist yet
 try {
     $team_years = $pdo->query("SELECT * FROM team_year_posts ORDER BY year DESC")->fetchAll();
 } catch (PDOException $e) {
-    // If table doesn't exist, show error message
     echo "<div class='main'><div class='box'>Error: The team_year_posts table doesn't exist yet. Please create it in the database or contact the administrator.</div></div>";
     require_once 'footer.php';
     exit;
 }
 
-// If no team years exist, show a message
 if (empty($team_years)) {
     echo "<div class='main'><div class='box'>No team data available yet. Please add team year posts through the admin dashboard.</div></div>";
     require_once 'footer.php';
