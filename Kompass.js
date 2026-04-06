@@ -1,65 +1,99 @@
+// Sidebar toggle
 const sidebar = document.getElementById('sidebar');
-const PageContainer = document.getElementById('PageContainer');
-
-function toggleSidebar(){
-    sidebar.classList.toggle('close')
+function toggleSidebar() {
+    sidebar.classList.toggle('close');
 }
 
-function toggleDropdown(button){
-    button.nextElementSibling.classList.toggle('show')
-    button.classList.toggle('rotate')
+// Dropdown toggle
+function toggleDropdown(button) {
+    button.nextElementSibling.classList.toggle('show');
+    button.classList.toggle('rotate');
 }
 
-let PopupPage = document.getElementById('Popup-Page');
-let Page = document.getElementById('Page');
+// ========== POPUP WITH ZOOM AT CLICK POSITION ==========
+const popup = document.getElementById('Popup-Page');
+const popupImg = document.getElementById('Page');
+let zoomed = false;
 
-function openPage(sisi){
-    PopupPage.style.display = "flex";
-    Page.src = sisi;
+function openPage(src) {
+    popup.style.display = 'flex';
+    popupImg.src = src;
+    // Reset zoom and transform
+    zoomed = false;
+    popupImg.style.transform = 'scale(1)';
+    popupImg.style.transformOrigin = 'center center';
+    popup.scrollTop = 0;
+    popup.scrollLeft = 0;
+    document.body.classList.add('popup-open');
 }
 
-function closePage(){
-    PopupPage.style.display = "none";
+function closePage() {
+    popup.style.display = 'none';
+    document.body.classList.remove('popup-open');
 }
 
-const img = document.getElementById('Page');
-let scale = 1;
-const zoomStep = 1.5;
-
-img.addEventListener('click', (event) => {
-    const rect = img.getBoundingClientRect();
+// Zoom at click position
+popupImg.addEventListener('click', function(e) {
+    e.stopPropagation();
     
-    const offsetX = event.clientX - rect.left;
-    const offsetY = event.clientY - rect.top;
-
-    scale = scale === 1 ? 1 + zoomStep : 1; 
-    img.style.transform = `scale(${scale})`;
-    img.style.transformOrigin = `${(offsetX / img.width) * 100}% ${(offsetY / img.height) * 100}%`;
-});
-
-
-image.addEventListener('mousemove', (event) => {
-    if (scale > 1) {
-        const rect = image.getBoundingClientRect();
-        const mouseX = event.clientX - rect.left;
-        const mouseY = event.clientY - rect.top;
-        image.style.transformOrigin = `${mouseX}px ${mouseY}px`;
+    if (!zoomed) {
+        // Get click coordinates relative to the image
+        const rect = popupImg.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        // Convert to percentage of image dimensions
+        const xPercent = (x / rect.width) * 100;
+        const yPercent = (y / rect.height) * 100;
+        
+        // Set transform origin to clicked point
+        popupImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+        popupImg.style.transform = 'scale(2)';
+        zoomed = true;
+        popupImg.style.cursor = 'zoom-out';
+    } else {
+        // Zoom out
+        popupImg.style.transform = 'scale(1)';
+        popupImg.style.transformOrigin = 'center center';
+        zoomed = false;
+        popupImg.style.cursor = 'zoom-in';
+        // Optional: reset scroll position
+        popup.scrollTop = 0;
+        popup.scrollLeft = 0;
     }
 });
 
+// Close popup when clicking on background (not on image)
+popup.addEventListener('click', function(e) {
+    if (e.target === popup) {
+        closePage();
+    }
+});
+
+// Prevent accidental drag of the image
+popupImg.addEventListener('dragstart', function(e) {
+    e.preventDefault();
+});
+
+// Set initial cursor
+popupImg.style.cursor = 'zoom-in';
+
+// ========== CAROUSEL FUNCTION ==========
 function moveCarousel(button, direction) {
-    const carousel = button.parentElement.querySelector('.carousel-images');
-    const totalImages = carousel.children.length;
-    let currentIndex = (parseInt(carousel.dataset.currentIndex) || 0) + direction;
-
-    if (currentIndex < 0) {
-        currentIndex = totalImages - 1;
-    } else if (currentIndex >= totalImages) {
-        currentIndex = 0;
-    }
-
-    carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
-    carousel.dataset.currentIndex = currentIndex;
+    const carousel = button.parentElement;
+    const imagesContainer = carousel.querySelector('.carousel-images');
+    const images = carousel.querySelectorAll('.carousel-image');
+    if (!images.length) return;
+    let currentIndex = parseInt(imagesContainer.dataset.currentIndex) || 0;
+    let newIndex = currentIndex + direction;
+    if (newIndex < 0) newIndex = images.length - 1;
+    if (newIndex >= images.length) newIndex = 0;
+    imagesContainer.style.transform = `translateX(-${newIndex * 100}%)`;
+    imagesContainer.dataset.currentIndex = newIndex;
 }
 
-
+document.addEventListener('DOMContentLoaded', function() {
+    const carousels = document.querySelectorAll('.carousel-images');
+    carousels.forEach(carousel => {
+        if (!carousel.dataset.currentIndex) carousel.dataset.currentIndex = '0';
+    });
+});

@@ -85,22 +85,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = "Event updated successfully!";
             
         } elseif (isset($_POST['add_issue'])) {
-            // Add new issue
+            // Add new issue - NO PDF UPLOAD, only images
             $title = $_POST['issue_title'];
             $issue_number = $_POST['issue_number'];
             $description = $_POST['issue_description'];
-            
-            // Handle PDF upload
-            $pdf_path = '';
-            if (!empty($_FILES['pdf']['name'])) {
-                $upload_dir = "Ausgaben/";
-                $filename = uniqid() . '_' . basename($_FILES['pdf']['name']);
-                $target_path = $upload_dir . $filename;
-                
-                if (move_uploaded_file($_FILES['pdf']['tmp_name'], $target_path)) {
-                    $pdf_path = "/LIFT-Kompass/Ausgaben/" . $filename;
-                }
-            }
             
             // Handle carousel image uploads
             $carousel_images = [];
@@ -122,31 +110,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             
-            $stmt = $pdo->prepare("INSERT INTO issues (title, issue_number, description, pdf_path, image_paths) VALUES (?, ?, ?, ?, ?)");
-            $stmt->execute([$title, $issue_number, $description, $pdf_path, json_encode($carousel_images)]);
+            // pdf_path is set to NULL (no PDF)
+            $stmt = $pdo->prepare("INSERT INTO issues (title, issue_number, description, pdf_path, image_paths) VALUES (?, ?, ?, NULL, ?)");
+            $stmt->execute([$title, $issue_number, $description, json_encode($carousel_images)]);
             $message = "Issue #$issue_number added successfully!";
             
         } elseif (isset($_POST['update_issue'])) {
-            // Update existing issue
+            // Update existing issue - NO PDF UPLOAD, only images
             $issue_id = $_POST['issue_id'];
             $title = $_POST['issue_title'];
             $issue_number = $_POST['issue_number'];
             $description = $_POST['issue_description'];
             
-            // Handle PDF upload - keep existing if no new upload
-            $pdf_path = $edit_issue['pdf_path'] ?? '';
-            if (!empty($_FILES['pdf']['name'])) {
-                $upload_dir = "Ausgaben/";
-                $filename = uniqid() . '_' . basename($_FILES['pdf']['name']);
-                $target_path = $upload_dir . $filename;
-                
-                if (move_uploaded_file($_FILES['pdf']['tmp_name'], $target_path)) {
-                    $pdf_path = "/LIFT-Kompass/Ausgaben/" . $filename;
-                }
-            }
+            // Keep existing PDF path (do not change it, and no new PDF can be uploaded)
+            // Fetch current pdf_path from database to preserve it
+            $stmt = $pdo->prepare("SELECT pdf_path FROM issues WHERE id = ?");
+            $stmt->execute([$issue_id]);
+            $current = $stmt->fetch();
+            $pdf_path = $current ? $current['pdf_path'] : null;
             
             // Handle carousel image uploads - keep existing if no new upload
-            $image_paths = $edit_issue['image_paths'] ?? '';
+            $image_paths = null;
             if (!empty($_FILES['carousel_images']['name'][0])) {
                 $upload_dir = "Ausgaben/Seiten/";
                 if (!is_dir($upload_dir)) {
@@ -165,11 +149,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
                 $image_paths = json_encode($carousel_images);
+            } else {
+                // Keep existing image_paths if no new images uploaded
+                $stmt = $pdo->prepare("SELECT image_paths FROM issues WHERE id = ?");
+                $stmt->execute([$issue_id]);
+                $existing = $stmt->fetch();
+                $image_paths = $existing ? $existing['image_paths'] : null;
             }
             
-            // Update all fields including issue_number
-            $stmt = $pdo->prepare("UPDATE issues SET title = ?, issue_number = ?, description = ?, pdf_path = ?, image_paths = ? WHERE id = ?");
-            $stmt->execute([$title, $issue_number, $description, $pdf_path, $image_paths, $issue_id]);
+            // Update all fields except pdf_path (we keep the old one)
+            $stmt = $pdo->prepare("UPDATE issues SET title = ?, issue_number = ?, description = ?, image_paths = ? WHERE id = ?");
+            $stmt->execute([$title, $issue_number, $description, $image_paths, $issue_id]);
             $message = "Issue #$issue_number updated successfully!";
             
         } elseif (isset($_POST['add_press'])) {
@@ -639,26 +629,12 @@ if (isset($_GET['edit_lesekreis'])) {
                     <div class="form-group">
                         <label>Issue Number (e.g., "1" or "2024-1"):</label>
                         <input type="text" name="issue_number" value="<?= $edit_issue ? htmlspecialchars($edit_issue['issue_number'] ?? '') : '' ?>" required placeholder="e.g., 1, 2, 2024-1, etc.">
-                        <small>This will be displayed as "Lade die [issue_number]. Nummer herunter"</small>
+                        <!-- Removed hint about download link -->
                     </div>
                     
                     <div class="form-group">
                         <label>Description:</label>
                         <textarea name="issue_description" required><?= $edit_issue ? htmlspecialchars($edit_issue['description']) : '' ?></textarea>
-                    </div>
-                    
-                    <?php if ($edit_issue && $edit_issue['pdf_path']): ?>
-                        <div class="current-images">
-                            <strong>Current PDF:</strong> <?= htmlspecialchars(basename($edit_issue['pdf_path'])) ?>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <div class="form-group">
-                        <label>PDF File:</label>
-                        <input type="file" name="pdf" accept=".pdf" <?= !$edit_issue ? 'required' : '' ?>>
-                        <?php if ($edit_issue): ?>
-                            <small>Leave empty to keep current PDF</small>
-                        <?php endif; ?>
                     </div>
                     
                     <?php if ($edit_issue && isset($edit_issue['image_paths']) && $edit_issue['image_paths']): ?>
@@ -681,7 +657,7 @@ if (isset($_GET['edit_lesekreis'])) {
                     <div class="form-group">
                         <label>Carousel Images (optional, multiple):</label>
                         <input type="file" name="carousel_images[]" multiple accept="image/*">
-                        <small>These images will be displayed in the carousel on the main page. Save to Ausgaben/Seiten/ folder.</small>
+                        <small>These images will be displayed in the carousel on the main page. Saved to Ausgaben/Seiten/ folder.</small>
                     </div>
                     
                     <?php if ($edit_issue): ?>
@@ -700,7 +676,6 @@ if (isset($_GET['edit_lesekreis'])) {
                         <th>ID</th>
                         <th>Issue #</th>
                         <th>Title</th>
-                        <th>PDF Path</th>
                         <th>Actions</th>
                     </tr>
                     <?php foreach ($issues as $issue): ?>
@@ -708,7 +683,6 @@ if (isset($_GET['edit_lesekreis'])) {
                         <td><?= $issue['id'] ?></td>
                         <td><?= htmlspecialchars($issue['issue_number'] ?? 'Not set') ?></td>
                         <td><?= htmlspecialchars($issue['title']) ?></td>
-                        <td><?= htmlspecialchars($issue['pdf_path']) ?></td>
                         <td>
                             <a href="?edit_issue=<?= $issue['id'] ?>#issues" class="edit-btn" style="text-decoration: none; display: inline-block;">Edit</a>
                             <form method="POST" style="display:inline;">

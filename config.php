@@ -1,8 +1,8 @@
 <?php
 $host = 'localhost';
 $dbname = 'kompass_db';
-$username = 'root';
-$password = '';
+$username = 'litkompass_user';
+$password = '24z47T1kEvSI';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
@@ -11,16 +11,16 @@ try {
     die("Database connection failed: " . $e->getMessage());
 }
 
-// Function to get all issues with their pages
+// Function to get all issues with their pages (PDF reference removed from SELECT)
 function getIssuesWithPages($pdo) {
-    // Added issue_number to SELECT
-    $stmt = $pdo->query("SELECT id, issue_number, title, description, pdf_path, image_paths FROM issues ORDER BY id DESC");
+    // Removed pdf_path from SELECT – not needed anymore
+    $stmt = $pdo->query("SELECT id, issue_number, title, description, image_paths FROM issues ORDER BY id DESC");
     $issues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($issues as &$issue) {
         $issue['pages'] = [];
         
-        // FIRST: Check for carousel images in the NEW image_paths column
+        // FIRST: Check for carousel images in the image_paths column
         if (!empty($issue['image_paths'])) {
             $image_paths = json_decode($issue['image_paths'], true);
             if (is_array($image_paths) && !empty($image_paths)) {

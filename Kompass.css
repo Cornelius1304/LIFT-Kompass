@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 html {
-    font-family: "Montserat", sans-serif;
+    font-family: "Montserrat", sans-serif;
 }
 
 :root {
@@ -13,13 +13,13 @@ html {
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
     min-height: 100vh;
     min-height: 100dvh;
     display: grid;
-    position: relative;
     grid-template-columns: auto 1fr;
     grid-template-rows: auto 1fr auto;
     grid-template-areas: 
@@ -28,7 +28,6 @@ body {
         "sidebar footer";
 }
 
-/* FIXED: Header with images on opposite sides */
 nav {
     height: 6rem;
     top: 0;
@@ -43,7 +42,6 @@ nav {
     padding: 0 2em;
 }
 
-/* Left logo */
 nav > img:first-child {
     height: 4em;
     width: auto;
@@ -51,7 +49,6 @@ nav > img:first-child {
     object-fit: contain;
 }
 
-/* Right department logo */
 nav #departament {
     height: 4em;
     width: auto;
@@ -69,16 +66,39 @@ nav #departament {
     position: sticky;
     align-self: start;
     grid-area: sidebar;
-    transition: 300ms ease-in-out;
+    transition: width 0.3s ease, padding 0.3s ease;
     overflow: hidden;
-    text-wrap: nowrap;
+    white-space: nowrap;
 }
 
+/* Sidebar closed state */
 #sidebar.close {
-    padding: 5px;
     width: 70px;
+    padding: 5px 0;
 }
 
+#sidebar.close span:not(svg) {
+    display: none;
+}
+
+#sidebar.close a,
+#sidebar.close #button,
+#sidebar.close li {
+    justify-content: center;
+    padding: 1em 0;
+    text-align: center;
+}
+
+#sidebar.close svg {
+    margin: 0 auto;
+    display: block;
+}
+
+#sidebar.close > ul > li:first-child {
+    justify-content: center;
+}
+
+/* Rest of sidebar styles */
 #sidebar ul, main ul {
     list-style: none;
 }
@@ -136,20 +156,24 @@ main {
 
 .main {
     position: relative;
-    padding: 10em;
+    padding: 2em 4em;
 }
 
 .header {
-    position: relative;
     text-align: center;
-    z-index: 1;
+    margin-bottom: 2rem;
+}
+
+.header img {
+    max-height: 150px;
+    width: auto;
+    margin: 0 1rem;
 }
 
 .Ausgaben {
     text-align: justify;
 }
 
-/* FIXED: Desktop dropdown styles */
 .dropdownButton {
     width: 100%;
     text-align: left;
@@ -157,7 +181,7 @@ main {
     border: none;
     border-radius: 0.5em;
     cursor: pointer;
-    font-size: 3rem;
+    font-size: 1.8rem;
     color: var(--base);
     display: flex;
     align-items: center;
@@ -179,10 +203,9 @@ main {
 }
 
 ul > li > button > span {
-    font-size: 20px;
+    font-size: 1.2rem;
 }
 
-/* FIXED: Desktop dropdown with original grid method */
 .dropdown {
     display: grid;
     grid-template-rows: 0fr;
@@ -196,87 +219,104 @@ ul > li > button > span {
 }
 
 .dropdown > div {
-    margin-left: 3rem;
-    margin-right: 3rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
     overflow: hidden;
-}
-
-/* FIXED: Arrow rotation for desktop */
-.dropdownButton svg {
-    transition: 200ms ease;
 }
 
 .rotate svg:first-child {
     transform: rotate(180deg);
 }
 
+/* Image gallery – original image size */
 .PageContainer {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 20px;
     justify-content: center;
-    padding: 10px;
+    padding: 20px;
+}
+
+.PageContainer .PageImage {
+    flex: 1 1 200px;
+    max-width: 250px;
+    text-align: center;
 }
 
 .PageContainer .PageImage img {
-    height: 400px;
+    width: 100%;
+    height: auto;
+    max-height: 450px;  
+    object-fit: contain;
     border: 3px solid var(--base);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, .1);
-    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     cursor: pointer;
-    object-fit: cover;
-    transition: .2s linear;
+    transition: transform 0.2s ease;
 }
 
 .PageContainer .PageImage img:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
+}
+
+/* Popup viewer – with smooth zoom transition */
+body.popup-open {
+    overflow: hidden;
 }
 
 .popupPage {
     width: 100%;
     height: 100vh;
-    background: rgba(0, 0, 0, .9);
+    background: rgba(0, 0, 0, 0.95);
     position: fixed;
     top: 0;
     left: 0;
     display: none;
-    align-items: center;
     justify-content: center;
-    z-index: 3;
+    align-items: center;
+    z-index: 1000;
+    overflow: auto;
+    cursor: pointer;
 }
 
 .popupPage img {
-    width: 90%;
-    max-width: 650px;
+    max-width: 90vw;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    cursor: pointer;
+    display: block;
+    margin: auto;
+    transition: transform 0.2s ease;
+    transform-origin: center center;
+}
+
+.popupPage span.close {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    font-size: 40px;
+    font-weight: bold;
+    color: white;
+    background: rgba(0,0,0,0.6);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    cursor: zoom-in;
-}
-
-.popupPage span {
-    position: absolute;
-    top: 5%;
-    right: 5%;
-    font-size: 80px;
-    color: white;
+    justify-content: center;
     cursor: pointer;
-    z-index: 100;
+    z-index: 1001;
+    transition: 0.2s;
 }
 
-.download {
-    text-decoration: none;
-    color: var(--active);
-    font-size: 22px;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    margin: 20px 0;
+.popupPage span.close:hover {
+    background: var(--hover);
+    color: black;
 }
 
-.download > svg {
-    fill: var(--active);
-}
-
+/* Original styles (footer, box, carousel, mobile) – preserved */
 .image-gallery {
     position: relative;
     width: 100%;
@@ -413,12 +453,11 @@ footer {
     text-align: justify;
 }
 
-/* Mobile Navigation - Hidden by default on desktop */
 .mobile-nav {
     display: none;
 }
 
-/* Mobile Styles Only - Won't affect desktop */
+/* Mobile styles */
 @media (max-width: 768px) {
     body {
         min-height: 100vh;
@@ -432,7 +471,6 @@ footer {
         position: relative;
     }
     
-    /* Hide desktop sidebar completely */
     aside#sidebar {
         display: none !important;
         visibility: hidden !important;
@@ -446,15 +484,13 @@ footer {
         left: -9999px !important;
     }
     
-    /* Adjust main content area */
     main {
         width: 100%;
         margin: 0;
         padding: 0;
-        padding-bottom: 60px; /* Space for mobile navigation */
+        padding-bottom: 60px;
     }
     
-    /* FIXED: Mobile header adjustments */
     nav {
         height: 5rem;
         padding: 0 1rem;
@@ -463,14 +499,12 @@ footer {
         justify-content: space-between;
     }
     
-    /* Left logo on mobile */
     nav > img:first-child {
         height: 3em;
         max-width: 120px;
         padding: 0;
     }
     
-    /* Right department logo on mobile */
     nav #departament {
         height: 3em;
         max-width: 120px;
@@ -478,7 +512,6 @@ footer {
         position: static;
     }
     
-    /* Mobile bottom navigation */
     .mobile-nav {
         display: flex;
         position: fixed;
@@ -523,7 +556,7 @@ footer {
     
     .main {
         padding: 1rem;
-        margin-bottom: 60px; /* Space for mobile navbar */
+        margin-bottom: 60px;
     }
     
     .header {
@@ -531,7 +564,6 @@ footer {
         text-align: center;
     }
     
-    /* Fix header text wrapping */
     .header h1, .header h2 {
         font-size: 1.2rem;
         line-height: 1.4;
@@ -544,7 +576,6 @@ footer {
         font-size: 1rem;
     }
     
-    /* Adjust header images for mobile */
     .header img {
         max-width: 120px;
         height: auto;
@@ -552,7 +583,6 @@ footer {
         display: block;
     }
     
-    /* FIXED: Mobile dropdown styles (override desktop) */
     .dropdownButton {
         font-size: 1.2rem;
         padding: 0.8rem 1rem;
@@ -573,7 +603,6 @@ footer {
         font-size: 16px;
     }
     
-    /* FIXED: Mobile dropdown with max-height method */
     .dropdown {
         max-height: 0;
         overflow: hidden;
@@ -581,12 +610,12 @@ footer {
         opacity: 0;
         font-size: 18px;
         line-height: 1.5;
-        display: block; /* Override grid display */
-        grid-template-rows: unset; /* Remove grid styles */
+        display: block;
+        grid-template-rows: unset;
     }
     
     .dropdown.show {
-        max-height: 2000px; /* Large enough to accommodate content */
+        max-height: 2000px;
         opacity: 1;
     }
     
@@ -596,7 +625,6 @@ footer {
         padding: 0.5rem 0;
     }
     
-    /* Fix all images to be responsive */
     img {
         max-width: 100%;
         height: auto;
@@ -611,7 +639,7 @@ footer {
         height: auto;
         max-width: 100%;
         width: 100%;
-        max-height: 300px;
+        max-height: 200px;
         object-fit: contain;
     }
     
@@ -678,20 +706,12 @@ footer {
         line-height: 1.6;
     }
     
-    /* Adjust download link for mobile */
-    .download {
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        padding: 0.8rem;
-        margin: 1rem 0;
-    }
-    
-    .popupPage span {
+    .popupPage span.close {
         font-size: 30px;
-        top: 1%;
+        width: 40px;
+        height: 40px;
+        top: 10px;
+        right: 10px;
     }
     
     .popupPage {
@@ -707,33 +727,18 @@ footer {
         object-fit: contain;
     }
     
-    .popupPage span {
-        top: 10px;
-        right: 10px;
-        font-size: 40px;
-        background: rgba(0, 0, 0, 0.5);
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
     .box > img {
         width: 100%;
         max-width: 300px;
         height: auto;
     }
     
-    /* Ensure all content containers are full width */
     .PageContainer, .image-gallery, .carousel, .carouselM {
         width: 100%;
         max-width: 100%;
     }
 }
 
-/* Small phones */
 @media (max-width: 480px) {
     .main {
         padding: 0.5rem;
@@ -786,7 +791,6 @@ footer {
     }
 }
 
-/* Very small phones */
 @media (max-width: 360px) {
     .mobile-nav {
         height: 50px;
