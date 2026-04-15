@@ -11,16 +11,14 @@ try {
     die("Database connection failed: " . $e->getMessage());
 }
 
-// Function to get all issues with their pages (PDF reference removed from SELECT)
 function getIssuesWithPages($pdo) {
-    // Removed pdf_path from SELECT – not needed anymore
-    $stmt = $pdo->query("SELECT id, issue_number, title, description, image_paths FROM issues ORDER BY id DESC");
+    // Removed issue_number and pdf_path
+    $stmt = $pdo->query("SELECT id, title, description, image_paths FROM issues ORDER BY id DESC");
     $issues = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($issues as &$issue) {
         $issue['pages'] = [];
         
-        // FIRST: Check for carousel images in the image_paths column
         if (!empty($issue['image_paths'])) {
             $image_paths = json_decode($issue['image_paths'], true);
             if (is_array($image_paths) && !empty($image_paths)) {
@@ -35,7 +33,6 @@ function getIssuesWithPages($pdo) {
             }
         }
         
-        // SECOND: If no carousel images, fall back to the OLD pages table
         if (empty($issue['pages'])) {
             $stmt = $pdo->prepare("SELECT * FROM pages WHERE issue_id = ? ORDER BY page_number");
             $stmt->execute([$issue['id']]);
