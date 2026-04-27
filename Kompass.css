@@ -43,16 +43,8 @@ nav {
 }
 
 nav > img:first-child {
-    height: 4em;
+    height: 60px;
     width: auto;
-    max-width: 150px;
-    object-fit: contain;
-}
-
-nav #departament {
-    height: 4em;
-    width: auto;
-    max-width: 150px;
     object-fit: contain;
 }
 
@@ -71,7 +63,6 @@ nav #departament {
     white-space: nowrap;
 }
 
-/* Sidebar closed state */
 #sidebar.close {
     width: 70px;
     padding: 5px 0;
@@ -98,7 +89,6 @@ nav #departament {
     justify-content: center;
 }
 
-/* Rest of sidebar styles */
 #sidebar ul, main ul {
     list-style: none;
 }
@@ -149,6 +139,17 @@ aside a:hover {
     cursor: pointer;
 }
 
+.sidebar-separator {
+    margin: 10px 0;
+    border: none;
+    border-top: 1px dotted var(--base);
+    background: none;
+}
+
+#sidebar.close .sidebar-separator {
+    margin: 5px 0;
+}
+
 main {
     grid-area: gallery;
     overflow-y: auto;
@@ -168,6 +169,17 @@ main {
     max-height: 150px;
     width: auto;
     margin: 0 1rem;
+    object-fit: contain;
+}
+
+.header h1 {
+    font-size: 0.9rem;
+    margin: 10px 0 0 0;
+}
+
+.header h2 {
+    font-size: 1.1rem;
+    margin: 0;
 }
 
 .Ausgaben {
@@ -228,7 +240,6 @@ ul > li > button > span {
     transform: rotate(180deg);
 }
 
-/* Image gallery – original image size */
 .PageContainer {
     display: flex;
     flex-wrap: wrap;
@@ -246,7 +257,7 @@ ul > li > button > span {
 .PageContainer .PageImage img {
     width: 100%;
     height: auto;
-    max-height: 450px;  
+    max-height: 450px;
     object-fit: contain;
     border: 3px solid var(--base);
     border-radius: 8px;
@@ -259,7 +270,6 @@ ul > li > button > span {
     transform: scale(1.02);
 }
 
-/* Popup viewer – with smooth zoom transition */
 body.popup-open {
     overflow: hidden;
 }
@@ -316,7 +326,6 @@ body.popup-open {
     color: black;
 }
 
-/* Original styles (footer, box, carousel, mobile) – preserved */
 .image-gallery {
     position: relative;
     width: 100%;
@@ -337,45 +346,95 @@ body.popup-open {
 }
 
 footer {
+    display: block;
+    padding: 0;
+    margin-top: auto;
+    background: none;
+}
+
+.footer-row {
     display: flex;
     flex-wrap: wrap;
-    flex-direction: column;
+    justify-content: space-around;
     align-items: center;
-    text-align: center;
+    padding: 30px 5%;
+    gap: 30px;
+    color: white;
+}
+
+.row-1 {
+    background: linear-gradient(135deg, #3471B8 0%, #5a9bd5 100%);
+}
+
+.row-2 {
+    background: linear-gradient(135deg, #2a5f8a 0%, #3a7bb5 100%);
+}
+
+.row-3 {
+    background: #024A76;
+}
+
+.footer-col {
+    flex: 1;
+    min-width: 250px;
+    color: white;
+}
+
+.footer-col h3 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: white;
+    border-bottom: 2px solid #E3AB23;
+    display: inline-block;
+    padding-bottom: 6px;
+}
+
+.social-links, .contact-links {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.social-column, .contact-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     gap: 10px;
-    justify-content: center;
-    grid-area: footer;
-    background-color: var(--active);
-    color: antiquewhite;
-    padding: 2em;
 }
 
-.adress {
-    font-size: 20px;
-    line-height: 2;
+.social-item, .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     color: white;
+    font-size: 0.85rem;
 }
 
-.adress span a {
+.social-item a, .contact-item a {
+    color: white;
     text-decoration: none;
-    color: white;
-    fill: white;
+    transition: color 0.3s ease;
+    font-size: 0.85rem;
 }
 
-.social:hover {
-    color: var(--hover);
+.social-item a:hover, .contact-item a:hover {
+    color: #E3AB23;
 }
 
-.social:hover > svg {
-    fill: var(--hover);
+.social-item svg, .contact-item svg {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
 }
 
-.social a:hover {
-    color: var(--hover);
+.contact-item span {
+    line-height: 1.4;
+    font-size: 0.85rem;
 }
 
-.social a:hover > svg {
-    fill: var(--hover);
+.footer-col p {
+    font-size: 0.85rem;
+    line-height: 1.4;
 }
 
 .box {
@@ -457,36 +516,21 @@ footer {
     display: none;
 }
 
-/* Mobile styles */
 @media (max-width: 768px) {
     body {
-        min-height: 100vh;
-        display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr auto;
         grid-template-areas: 
             "navbar"
             "gallery"
             "footer";
-        position: relative;
     }
     
     aside#sidebar {
-        display: none !important;
-        visibility: hidden !important;
-        width: 0 !important;
-        height: 0 !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        overflow: hidden !important;
-        position: absolute !important;
-        top: -9999px !important;
-        left: -9999px !important;
+        display: none;
     }
     
     main {
         width: 100%;
-        margin: 0;
         padding: 0;
         padding-bottom: 60px;
     }
@@ -494,22 +538,10 @@ footer {
     nav {
         height: 5rem;
         padding: 0 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
     }
     
     nav > img:first-child {
-        height: 3em;
-        max-width: 120px;
-        padding: 0;
-    }
-    
-    nav #departament {
-        height: 3em;
-        max-width: 120px;
-        padding: 0;
-        position: static;
+        height: 40px;
     }
     
     .mobile-nav {
@@ -561,57 +593,34 @@ footer {
     
     .header {
         padding: 1rem 0;
-        text-align: center;
+    }
+    
+    .header-logo {
+        max-width: 90%;
+        max-height: 300px;
+        margin: 0 auto 1rem;
     }
     
     .header h1, .header h2 {
-        font-size: 1.2rem;
+        font-size: 1rem;
         line-height: 1.4;
         padding: 0 0.5rem;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-    }
-    
-    .header h1 {
-        font-size: 1rem;
-    }
-    
-    .header img {
-        max-width: 120px;
-        height: auto;
-        margin: 0.5rem auto;
-        display: block;
     }
     
     .dropdownButton {
         font-size: 1.2rem;
         padding: 0.8rem 1rem;
-        width: 100%;
-        text-align: left;
-        display: flex;
-        align-items: center;
         justify-content: space-between;
-        gap: 0.5rem;
     }
     
     .dropdownButton span {
-        font-size: 16px;
-        flex-grow: 1;
-    }
-    
-    ul > li > button > span {
         font-size: 16px;
     }
     
     .dropdown {
         max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out;
         opacity: 0;
-        font-size: 18px;
-        line-height: 1.5;
         display: block;
-        grid-template-rows: unset;
     }
     
     .dropdown.show {
@@ -625,85 +634,49 @@ footer {
         padding: 0.5rem 0;
     }
     
-    img {
-        max-width: 100%;
-        height: auto;
-    }
-    
     .PageContainer {
         padding: 0.5rem;
         gap: 10px;
     }
     
     .PageContainer .PageImage img {
-        height: auto;
-        max-width: 100%;
-        width: 100%;
         max-height: 200px;
-        object-fit: contain;
-    }
-    
-    .image-gallery {
-        height: 200px;
-    }
-    
-    .slides img {
-        height: 200px;
-        width: 100%;
-        object-fit: cover;
     }
     
     .box {
         padding: 1rem;
         margin: 0.5rem;
         font-size: 14px;
-        padding-left: 1rem;
-        padding-right: 1rem;
-        margin-left: 0;
-        margin-right: 0;
         width: calc(100% - 1rem);
-        box-sizing: border-box;
     }
     
-    .carousel {
-        height: 300px;
+    .carousel, .carouselM {
+        height: auto;
         width: 100%;
-        max-width: 100%;
         margin: 1em 0;
-    }
-    
-    .carouselM {
-        height: 250px;
-        width: 100%;
-        max-width: 100%;
-        margin: 1em 0;
-    }
-    
-    .carousel-images {
-        width: 100%;
     }
     
     .carousel-image {
-        width: 100%;
         height: 100%;
-        object-fit: cover;
     }
     
-    .carousel-button {
-        padding: 6px;
-        font-size: 16px;
+    .footer-row {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px 20px;
     }
     
-    footer {
-        padding: 1rem;
-        font-size: 14px;
-        position: relative;
-        width: 100%;
+    .footer-col h3 {
+        display: block;
+        text-align: center;
     }
     
-    .adress {
-        font-size: 14px;
-        line-height: 1.6;
+    .social-links, .contact-links {
+        flex-direction: column;
+    }
+    
+    .social-item, .contact-item {
+        justify-content: center;
     }
     
     .popupPage span.close {
@@ -717,25 +690,16 @@ footer {
     .popupPage {
         align-items: flex-start;
         padding-top: 60px;
-        overflow-y: auto;
     }
     
     .popupPage img {
         width: 95%;
-        max-width: none;
         max-height: 70vh;
-        object-fit: contain;
     }
     
     .box > img {
         width: 100%;
         max-width: 300px;
-        height: auto;
-    }
-    
-    .PageContainer, .image-gallery, .carousel, .carouselM {
-        width: 100%;
-        max-width: 100%;
     }
 }
 
@@ -744,50 +708,24 @@ footer {
         padding: 0.5rem;
     }
     
-    .PageContainer .PageImage img {
-        height: auto;
-    }
-    
-    .image-gallery {
-        height: 150px;
-    }
-    
-    .slides img {
-        height: 150px;
-    }
-    
-    .carousel {
-        height: 250px;
-    }
-    
-    .carouselM {
-        height: 200px;
-    }
-    
-    .box > img {
-        max-width: 250px;
-    }
-    
     .dropdownButton {
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
     
     nav > img:first-child {
-        height: 2.5em;
-        max-width: 100px;
-    }
-    
-    nav #departament {
-        height: 2.5em;
-        max-width: 100px;
+        height: 35px;
     }
     
     .mobile-nav {
         height: 55px;
     }
     
-    .mobile-nav a {
-        font-size: 11px;
+    .carousel, .carouselM {
+        height: auto;
+    }
+    
+    .header-logo {
+        max-height: 200px;
     }
 }
 
@@ -796,42 +734,15 @@ footer {
         height: 50px;
     }
     
-    .main {
-        margin-bottom: 50px;
-    }
-    
-    nav {
-        height: 4rem;
-    }
-    
     nav > img:first-child {
-        height: 2em;
-        max-width: 80px;
-    }
-    
-    nav #departament {
-        height: 2em;
-        max-width: 80px;
-    }
-    
-    .PageContainer .PageImage img {
-        height: auto;
-    }
-    
-    .box {
-        padding: 0.8rem;
+        height: 30px;
     }
     
     .dropdownButton {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
     
-    .mobile-nav svg {
-        width: 20px;
-        height: 20px;
-    }
-    
-    .mobile-nav a {
-        font-size: 10px;
+    .header-logo {
+        max-height: 150px;
     }
 }

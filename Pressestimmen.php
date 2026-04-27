@@ -6,9 +6,8 @@ $press_mentions = getPress($pdo);
 <div class="main">
     <div class="header">
         <img src="FLIFT-03.png" height="200px">
-        <img src="Logo_Kompass.png" height="200px">
-        <h1>Pressestimmen: LIT KOMPASS<br>
-            11. Juni 2021</h1>
+        <img src="Logo_Kompass_short.png" height="200px">
+        <h1 style="font-size: 1.2rem;">Pressestimmen: LIT KOMPASS<br>11. Juni 2021</h1>
         <br><hr><br>
     </div>
     <div class="presse">

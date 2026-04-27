@@ -19,10 +19,10 @@ if (empty($team_years)) {
 <div class="main">
     <div class="header">
         <img src="FLIFT-03.png" height="200px">
-        <img src="Logo_Kompass.png" height="200px">
+        <img src="Logo_Kompass_short.png" height="200px">
         <br>
-        <h2>Wir über uns</h2>
-        <h3>-Teamwork makes the dream work-</h3>
+        <h1 style="font-size: 1.2rem;">Wir über uns</h1>
+        <h2 style="font-size: 1.1rem;">-Teamwork makes the dream work-</h2>
     </div>
 
     <?php foreach ($team_years as $post): 
@@ -116,7 +116,6 @@ function moveCarousel(button, direction) {
     imagesContainer.style.transform = `translateX(${newX}px)`;
 }
 
-// Image popup functionality
 function openPage(src) {
     document.getElementById("Popup-Page").style.display = "flex";
     document.getElementById("Page").src = src;
@@ -126,7 +125,6 @@ function closePage() {
     document.getElementById("Popup-Page").style.display = "none";
 }
 
-// Close popup when clicking outside the image
 document.getElementById("Popup-Page").addEventListener('click', function(e) {
     if (e.target === this || e.target.classList.contains('close')) {
         closePage();

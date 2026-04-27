@@ -6,10 +6,10 @@ $events = getEvents($pdo);
 <div class="main">
     <div class="header">
         <img src="FLIFT-03.png" height="200px">
-        <img src="Logo_Kompass.png" height="200px">
+        <img src="Logo_Kompass_short.png" height="200px">
         <br>
-        <h1>Was wir so tun</h1>
-        <h2>Fotos von unseren Veranstaltungen</h2>
+        <h1 style="font-size: 1.2rem;">Was wir so tun</h1>
+        <h2 style="font-size: 1.1rem;">Fotos von unseren Veranstaltungen</h2>
     </div>
 
     <?php foreach ($events as $event): 

@@ -21,10 +21,10 @@ if (empty($lesekreis_posts)) {
 <div class="main">
     <div class="header">
         <img src="FLIFT-03.png" height="200px">
-        <img src="Logo_Kompass.png" height="200px">
+        <img src="Logo_Kompass_short.png" height="200px">
         <br>
-        <h1>Lesekreis</h1>
-        <h2>Unsere Lesekreis-Aktivitäten und Treffen</h2>
+        <h1 style="font-size: 1.2rem;">Lesekreis</h1>
+        <h2 style="font-size: 1rem;">Unsere Lesekreis-Aktivitäten und Treffen</h2>
     </div>
 
     <?php foreach ($lesekreis_posts as $post): 

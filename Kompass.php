@@ -6,13 +6,12 @@ $issues = getIssuesWithPages($pdo);
 
 <div class="main">
     <div class="header">
-        <img src="FLIFT-03.png">
-        <img src="Logo_Kompass.png">
-        <h1>die deutschsprachige Studentenzeitung<br>
+        <img src="FLIFT-03.png" height="200px">
+        <img src="Logo_Kompass_short.png" height="200px">
+        <h1 style="font-size: 1.2rem;">die deutschsprachige Studentenzeitung<br>
             der Fakultät für Philologie, Geschichte, Philosophie und Theologie<br>
             an der West-Universität Temeswar</h1>
         <br>
-        <h2>Ausgaben</h2>
     </div>
     <div class="Ausgaben">
         <ul>
