@@ -390,8 +390,8 @@ if (isset($_GET['edit_lesekreis'])) {
                     <input type="hidden" name="event_id" value="<?= $edit_event['id'] ?>">
                 <?php endif; ?>
                 <div class="form-group"><label>Date:</label><input type="date" name="date" value="<?= $edit_event ? $edit_event['date'] : '' ?>" required></div>
-                <div class="form-group"><label>Title:</label><input type="text" name="title" value="<?= $edit_event ? htmlspecialchars($edit_event['title']) : '' ?>" required></div>
-                <div class="form-group"><label>Description:</label><textarea name="description" required><?= $edit_event ? htmlspecialchars($edit_event['description']) : '' ?></textarea></div>
+                <div class="form-group"><label>Title:</label><input type="text" name="title" value="<?= $edit_event ? htmlspecialchars($edit_event['title']) : '' ?>"></div>
+                <div class="form-group"><label>Description:</label><textarea name="description"><?= $edit_event ? htmlspecialchars($edit_event['description']) : '' ?></textarea></div>
                 <?php if ($edit_event && $edit_event['image_paths']): ?>
                     <div class="current-images"><strong>Current Images:</strong><br>
                         <?php $images = json_decode($edit_event['image_paths'], true); foreach ($images as $image): ?>
@@ -432,8 +432,8 @@ if (isset($_GET['edit_lesekreis'])) {
             <h2><?= $edit_issue ? 'Edit Issue' : 'Add New Issue' ?></h2>
             <form method="POST" enctype="multipart/form-data">
                 <?php if ($edit_issue): ?><input type="hidden" name="issue_id" value="<?= $edit_issue['id'] ?>"><?php endif; ?>
-                <div class="form-group"><label>Title:</label><input type="text" name="issue_title" value="<?= $edit_issue ? htmlspecialchars($edit_issue['title']) : '' ?>" required></div>
-                <div class="form-group"><label>Description:</label><textarea name="issue_description" required><?= $edit_issue ? htmlspecialchars($edit_issue['description']) : '' ?></textarea></div>
+                <div class="form-group"><label>Title:</label><input type="text" name="issue_title" value="<?= $edit_issue ? htmlspecialchars($edit_issue['title']) : '' ?>"></div>
+                <div class="form-group"><label>Description:</label><textarea name="issue_description"><?= $edit_issue ? htmlspecialchars($edit_issue['description']) : '' ?></textarea></div>
                 <?php if ($edit_issue && isset($edit_issue['image_paths']) && $edit_issue['image_paths']): ?>
                     <div class="current-images"><strong>Current Carousel Images:</strong><br>
                         <?php $images = json_decode($edit_issue['image_paths'], true); if (is_array($images)): foreach ($images as $image): ?>
@@ -473,9 +473,9 @@ if (isset($_GET['edit_lesekreis'])) {
             <h2><?= $edit_press ? 'Edit Press Mention' : 'Add New Press Mention' ?></h2>
             <form method="POST">
                 <?php if ($edit_press): ?><input type="hidden" name="press_id" value="<?= $edit_press['id'] ?>"><?php endif; ?>
-                <div class="form-group"><label>Source:</label><input type="text" name="press_source" value="<?= $edit_press ? htmlspecialchars($edit_press['source']) : '' ?>" required></div>
-                <div class="form-group"><label>Title:</label><input type="text" name="press_title" value="<?= $edit_press ? htmlspecialchars($edit_press['title']) : '' ?>" required></div>
-                <div class="form-group"><label>URL:</label><input type="url" name="press_url" value="<?= $edit_press ? htmlspecialchars($edit_press['url']) : '' ?>" required></div>
+                <div class="form-group"><label>Source:</label><input type="text" name="press_source" value="<?= $edit_press ? htmlspecialchars($edit_press['source']) : '' ?>"></div>
+                <div class="form-group"><label>Title:</label><input type="text" name="press_title" value="<?= $edit_press ? htmlspecialchars($edit_press['title']) : '' ?>"></div>
+                <div class="form-group"><label>URL:</label><input type="url" name="press_url" value="<?= $edit_press ? htmlspecialchars($edit_press['url']) : '' ?>"></div>
                 <?php if ($edit_press): ?>
                     <button type="submit" name="update_press">Update Press Mention</button><a href="?" class="cancel-btn" style="text-decoration: none; display: inline-block;">Cancel</a>
                 <?php else: ?>
@@ -509,9 +509,9 @@ if (isset($_GET['edit_lesekreis'])) {
             <h2><?= (isset($edit_member_post) && $edit_member_post) ? 'Edit Team Year Post' : 'Add New Team Year Post' ?></h2>
             <form method="POST" enctype="multipart/form-data">
                 <?php if (isset($edit_member_post) && $edit_member_post): ?><input type="hidden" name="member_post_id" value="<?= $edit_member_post['id'] ?>"><?php endif; ?>
-                <div class="form-group"><label>Year:</label><input type="text" name="year" value="<?= (isset($edit_member_post) && $edit_member_post) ? htmlspecialchars($edit_member_post['year']) : '' ?>" required placeholder="e.g., 2020-2021"></div>
-                <div class="form-group"><label>Title:</label><input type="text" name="title" value="<?= (isset($edit_member_post) && $edit_member_post) ? htmlspecialchars($edit_member_post['title']) : '' ?>" required placeholder="e.g., Redaktion 2020-2021"></div>
-                <div class="form-group"><label>Subtitle:</label><input type="text" name="subtitle" value="<?= (isset($edit_member_post) && $edit_member_post) ? htmlspecialchars($edit_member_post['subtitle']) : '' ?>" required placeholder="e.g., Jahrgang 1 - Nummer 1, Nummer 2, Nummer 3"></div>
+                <div class="form-group"><label>Year:</label><input type="text" name="year" value="<?= (isset($edit_member_post) && $edit_member_post) ? htmlspecialchars($edit_member_post['year']) : '' ?>" placeholder="e.g., 2020-2021"></div>
+                <div class="form-group"><label>Title:</label><input type="text" name="title" value="<?= (isset($edit_member_post) && $edit_member_post) ? htmlspecialchars($edit_member_post['title']) : '' ?>" placeholder="e.g., Redaktion 2020-2021"></div>
+                <div class="form-group"><label>Subtitle:</label><input type="text" name="subtitle" value="<?= (isset($edit_member_post) && $edit_member_post) ? htmlspecialchars($edit_member_post['subtitle']) : '' ?>" placeholder="e.g., Jahrgang 1 - Nummer 1, Nummer 2, Nummer 3"></div>
                 <div class="form-group"><label>Betreuer:</label><textarea name="betreuer" rows="3" placeholder="Enter Betreuer names (one per line)"><?= (isset($edit_member_post) && $edit_member_post) ? htmlspecialchars($edit_member_post['betreuer']) : '' ?></textarea></div>
                 <div class="form-group"><label>Redaktionsmitglieder:</label><textarea name="redaktionsmitglieder" rows="4" placeholder="Enter Redaktionsmitglieder names (one per line)"><?= (isset($edit_member_post) && $edit_member_post) ? htmlspecialchars($edit_member_post['redaktionsmitglieder']) : '' ?></textarea></div>
                 <div class="form-group"><label>Studentische Leitung:</label><textarea name="studentische_leitung" rows="3" placeholder="Enter Studentische Leitung names (one per line)"><?= (isset($edit_member_post) && $edit_member_post) ? htmlspecialchars($edit_member_post['studentische_leitung']) : '' ?></textarea></div>
@@ -524,7 +524,7 @@ if (isset($_GET['edit_lesekreis'])) {
                         <?php endforeach; endif; ?>
                     </div>
                 <?php endif; ?>
-                <div class="form-group"><label>Financing Text:</label><textarea name="financing_text" rows="2"><?= (isset($edit_member_post) && $edit_member_post) ? htmlspecialchars($edit_member_post['financing_text']) : 'In Zusammenarbeit mit der Banater Zeitung (Chefredakteur Siegfried Thiel) und mit technischer Unterstützung von der ADZ. Finanzierung der Druckversion: Demokratisches Forum der Deutschen im Banat.' ?></textarea></div>
+                <div class="form-group"><label>Financing Text:</label><textarea name="financing_text" rows="2" placeholder="Enter financing information"><?= (isset($edit_member_post) && $edit_member_post) ? htmlspecialchars($edit_member_post['financing_text']) : 'In Zusammenarbeit mit der Banater Zeitung (Chefredakteur Siegfried Thiel) und mit technischer Unterstützung von der ADZ. Finanzierung der Druckversion: Demokratisches Forum der Deutschen im Banat.' ?></textarea></div>
                 <?php if (isset($edit_member_post) && $edit_member_post): ?>
                     <button type="submit" name="update_member_post">Update Team Post</button><a href="?" class="cancel-btn" style="text-decoration: none; display: inline-block;">Cancel</a>
                 <?php else: ?>
@@ -558,8 +558,8 @@ if (isset($_GET['edit_lesekreis'])) {
             <form method="POST" enctype="multipart/form-data">
                 <?php if (isset($edit_lesekreis) && $edit_lesekreis): ?><input type="hidden" name="lesekreis_id" value="<?= $edit_lesekreis['id'] ?>"><?php endif; ?>
                 <div class="form-group"><label>Date:</label><input type="date" name="date" value="<?= (isset($edit_lesekreis) && $edit_lesekreis) ? $edit_lesekreis['date'] : '' ?>" required></div>
-                <div class="form-group"><label>Title:</label><input type="text" name="title" value="<?= (isset($edit_lesekreis) && $edit_lesekreis) ? htmlspecialchars($edit_lesekreis['title']) : '' ?>" required></div>
-                <div class="form-group"><label>Description:</label><textarea name="description" rows="5" required><?= (isset($edit_lesekreis) && $edit_lesekreis) ? htmlspecialchars($edit_lesekreis['description']) : '' ?></textarea></div>
+                <div class="form-group"><label>Title:</label><input type="text" name="title" value="<?= (isset($edit_lesekreis) && $edit_lesekreis) ? htmlspecialchars($edit_lesekreis['title']) : '' ?>"></div>
+                <div class="form-group"><label>Description:</label><textarea name="description" rows="5"><?= (isset($edit_lesekreis) && $edit_lesekreis) ? htmlspecialchars($edit_lesekreis['description']) : '' ?></textarea></div>
                 <?php if (isset($edit_lesekreis) && $edit_lesekreis && !empty($edit_lesekreis['image_paths'])): ?>
                     <div class="current-images"><strong>Current Images:</strong><br>
                         <?php $images = json_decode($edit_lesekreis['image_paths'], true); if (is_array($images)): foreach ($images as $image): ?>
